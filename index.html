@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIAN ÉCLAT | 恬光 預約系統</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;500;600&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Fredoka:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        'korean-serif': ['Gowun Batang', 'Noto Serif TC', 'serif'],
+                        'serif-tc': ['Noto Serif TC', 'serif'],
+                        'cute': ['Fredoka', 'Gowun Dodum', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            primary: '#A06E6E', // Muted sophisticated rose
+                            accent: '#F3E99F',
+                            bg: '#F9F7F5', // Creamy backdrop
+                            dark: '#1a1a1a',
+                            border: '#EAE5E0',
+                            muted: '#7A746F'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Inter', '"Noto Sans TC"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background-color: #F9F7F5;
+            color: #1a1a1a;
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                background: linear-gradient(to right, #ffffff 0%, #ffffff 42%, #F9F7F5 42%, #F9F7F5 100%);
+                background-attachment: fixed;
+            }
+        }
+
+        .korean-input {
+            width: 100%;
+            padding: 1.15rem 1.75rem;
+            background-color: #ffffff;
+            border: 1px solid #EAE5E0;
+            border-radius: 1.5rem;
+            font-size: 15px;
+            font-weight: 500;
+            color: #1a1a1a;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .korean-input:focus {
+            border-color: #A06E6E;
+            box-shadow: 0 8px 30px rgba(160, 110, 110, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .korean-input::placeholder {
+            color: #C1B9B0;
+            font-weight: 400;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+
+        .marquee-container {
+            animation: marquee 45s linear infinite;
+        }
+
+        .assessment-card-input:checked + .assessment-card {
+            border-color: #A06E6E;
+            background-color: rgba(160, 110, 110, 0.03);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(160, 110, 110, 0.05);
+        }
+
+        .assessment-card-input:checked + .assessment-card span {
+            color: #A06E6E;
+        }
+
+        .modal-overlay {
+            background-color: rgba(44, 51, 51, 0.3);
+            backdrop-filter: blur(8px);
+        }
+
+        .straight-text {
+            font-style: normal !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-8 md:py-16 md:px-8 lg:px-12">
+        <div class="flex flex-col md:flex-row gap-10 md:gap-16 lg:gap-32">
+            
+            <!-- Left Side -->
+            <div class="w-full md:w-[42%] lg:w-[38%] flex flex-col h-full md:sticky md:top-24">
+                <div class="mb-10 md:mb-14">
+                    <h1 class="leading-none mb-8 md:mb-12">
+                        <span class="block text-[12px] md:text-[13px] tracking-[0.6em] md:tracking-[0.8em] font-light uppercase mb-6 md:mb-10 text-black/40 straight-text">Atelier</span>
+                        <span class="block font-serif font-medium text-[42px] sm:text-[52px] md:text-[58px] tracking-tight mb-4 text-black straight-text">TIAN ÉCLAT</span>
+                        <span class="block text-[28px] md:text-[32px] font-light tracking-[0.4em] text-black/60 ml-1 straight-text">恬 光</span>
+                    </h1>
+                    <div class="w-10 md:w-12 h-[1px] bg-brand-primary/30 mb-8 md:mb-10"></div>
+                    <div class="space-y-4">
+                        <p class="text-[16px] md:text-[17px] text-black/80 leading-relaxed font-bold tracking-tight straight-text">
+                            「恬光．專屬於妳的光」
+                        </p>
+                        <p class="text-[14px] md:text-[15px] text-black/50 font-medium max-w-[280px] md:max-w-[300px] leading-relaxed straight-text">
+                            在不刻意的修飾之中，回歸剛好的質感。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Guestbook -->
+                <div class="mt-8 flex-grow overflow-hidden flex flex-col relative">
+                    <div class="flex items-center gap-3 mb-10 z-10 py-2">
+                        <i data-lucide="message-square" class="w-4 h-4 text-black/30"></i>
+                        <span class="text-[11px] tracking-[0.4em] uppercase text-black/40 font-bold straight-text">Latest Reviews 顧客回饋</span>
+                    </div>
+                    
+                    <div class="relative h-[300px] md:h-[450px] overflow-hidden">
+                        <div id="reviews-marquee" class="marquee-container space-y-8"></div>
+                        <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white to-transparent pointer-events-none z-10"></div>
+                        <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none z-10"></div>
+                    </div>
+                </div>
+                <div class="hidden md:block pt-16 mt-12">
+                    <div class="text-[10px] uppercase tracking-[0.3em] text-black/20 font-bold">
+                        © 2026 TIAN ÉCLAT ATELIER
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side -->
+            <div class="w-full md:w-[58%] lg:w-[62%]">
+                <div id="form-container">
+                    <section class="p-6 md:p-8 bg-brand-primary/5 rounded-[2rem] md:rounded-[2.5rem] border border-[#F2EEEB] mb-6">
+                        <h3 class="text-[11px] md:text-[12px] font-black text-black/40 mb-6 text-center uppercase tracking-[0.4em] flex items-center justify-center gap-2 straight-text">
+                            <i data-lucide="calendar" class="w-4 h-4 opacity-30"></i> 預約重要須知 Notice
+                        </h3>
+                        <div class="space-y-5 text-[14px] leading-relaxed text-black/70 font-medium">
+                            <div class="flex gap-4">
+                                <span class="text-brand-primary font-black text-[15px]">01.</span>
+                                <p class="flex-1">為維持服務細節，敬請準時赴約。遲到逾 15 分鐘可能需調整項目或改期。</p>
+                            </div>
+                            <div class="flex gap-4">
+                                <span class="text-brand-primary font-black text-[15px]">02.</span>
+                                <p class="flex-1">送出表單後請於 24 小時內預付訂金 $1,000 元。</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="flex flex-col items-center mb-10 text-center">
+                        <span class="text-[11px] tracking-[0.5em] uppercase text-black/30 font-bold mb-4 straight-text">Appointment Form / 預約申請</span>
+                        <div class="w-10 h-[1px] bg-[#EAE5E0]"></div>
+                    </div>
+
+                    <iframe name="hidden_iframe" id="hidden_iframe" class="hidden"></iframe>
+                    <form id="reservation-form" class="space-y-10 pb-20" target="hidden_iframe">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                            <div>
+                                <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-3 font-bold ml-1 straight-text">姓名 Name</label>
+                                <input required type="text" id="name" class="korean-input" placeholder="請輸入全名" oninput="updateHiddenFields()">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-3 font-bold ml-1 straight-text">LINE ID</label>
+                                <input required type="text" id="line-id" class="korean-input" placeholder="Line ID 或 同電話號碼" oninput="updateHiddenFields()">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                            <div>
+                                <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-3 font-bold ml-1 straight-text">電話 Phone</label>
+                                <input required type="tel" id="phone" class="korean-input" placeholder="09xx-xxx-xxx" oninput="updateHiddenFields()">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-3 font-bold ml-1 straight-text">生日 Birthday</label>
+                                <input required type="date" id="birthday" class="korean-input cursor-pointer" oninput="updateHiddenFields()">
+                            </div>
+                        </div>
+
+                        <div class="space-y-6 pt-4">
+                            <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-4 font-bold ml-1 text-center straight-text font-serif">施作項目 Service</label>
+                            <div class="relative">
+                                <select id="service" class="korean-input appearance-none pr-12 cursor-pointer text-center font-bold" onchange="handleServiceChange()">
+                                    <option value="misty_brows">霧眉</option>
+                                    <option value="misty_lips">霧唇</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="absolute right-8 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <!-- Assessment - Brows -->
+                        <div id="brows-assessment-section" class="space-y-3 pt-2">
+                            <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-1 font-bold ml-1 text-center straight-text">眉部現況評估 Brows Assessment</label>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="experience" value="brow_new" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
+                                        <span class="text-[13px] font-bold text-black/50 straight-text">初次嘗試霧眉</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="experience" value="brow_previous" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
+                                        <span class="text-[13px] font-bold text-black/50 straight-text">曾有霧眉經驗</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="experience" value="brow_correction" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
+                                        <span class="text-[13px] font-bold text-black/50 straight-text">需舊底色改眉</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Assessment - Lips -->
+                        <div id="lips-assessment-section" class="hidden space-y-3 pt-2">
+                            <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-1 font-bold ml-1 text-center straight-text">唇部現況評估 Lips Assessment</label>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="experience" value="lip_new" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
+                                        <span class="text-[13px] font-bold text-black/50 straight-text">初次嘗試</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="experience" value="lip_previous" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
+                                        <span class="text-[13px] font-bold text-black/50 straight-text">曾有經驗</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="experience" value="lip_dark_correction" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
+                                        <span class="text-[13px] font-bold text-black/50 straight-text">烏唇校色 (+$800)</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Suggestions Container -->
+                        <div id="suggestion-container" class="space-y-4 pt-4">
+                            <div id="brow_new-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                                <div class="p-6 rounded-[2rem] bg-brand-primary/5 border border-brand-primary/10 flex items-start gap-4">
+                                    <i data-lucide="sparkles" class="w-5 h-5 text-brand-primary/40 mt-0.5"></i>
+                                    <div class="space-y-2">
+                                        <span class="text-[11px] uppercase tracking-widest text-brand-primary font-black">Brow Artistry</span>
+                                        <p class="text-[13px] text-black/60 leading-relaxed font-medium straight-text">期待與妳初次相遇。為精確分析妳的原生骨相與毛流方向，請提供正面全臉的「清透素顏照」，老師將為妳策劃最貼合個人氣質的精緻眉型。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="brow_previous-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                                <div class="p-6 rounded-[2rem] bg-brand-primary/5 border border-brand-primary/10 flex items-start gap-4">
+                                    <i data-lucide="heart" class="w-5 h-5 text-brand-primary/40 mt-0.5"></i>
+                                    <div class="space-y-2">
+                                        <span class="text-[11px] uppercase tracking-widest text-brand-primary font-black">Refined Design</span>
+                                        <p class="text-[13px] text-black/60 leading-relaxed font-medium straight-text">歡迎再次預約。若目前尚留有微量底色，請於光線充足處拍攝眉部細節，老師將根據現況為妳客製最理想的修護建議。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="brow_correction-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                                <div class="p-6 rounded-[2rem] bg-red-50/50 border border-red-100 flex items-start gap-4 shadow-sm">
+                                    <i data-lucide="alert-circle" class="w-5 h-5 text-red-400 mt-0.5"></i>
+                                    <div class="space-y-2">
+                                        <span class="text-[11px] uppercase tracking-widest text-red-500 font-black">Correction Plan</span>
+                                        <p class="text-[13px] text-red-800/60 leading-relaxed font-medium straight-text italic">「舊底色改眉」需優先考量底色殘留程度。若色度較深，建議先進行除色服務以確保清透質感。請務必提供現狀近照供初步分析。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="lip_new-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                                <div class="p-6 rounded-[2rem] bg-brand-primary/5 border border-brand-primary/10 flex items-start gap-4">
+                                    <i data-lucide="sparkles" class="w-5 h-5 text-brand-primary/40 mt-0.5"></i>
+                                    <div class="space-y-2">
+                                        <span class="text-[11px] uppercase tracking-widest text-brand-primary font-black">Eclat Lip Artistry</span>
+                                        <p class="text-[13px] text-black/60 leading-relaxed font-medium straight-text">期待為妳打造原生般的飽和光澤。請提供自然光下、無濾鏡的「唇部素容照」，這將協助老師精準評估底色，訂製最顯高級感的專屬色階。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="lip_previous-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                                <div class="p-6 rounded-[2rem] bg-brand-primary/5 border border-brand-primary/10 flex items-start gap-4">
+                                    <i data-lucide="heart" class="w-5 h-5 text-brand-primary/40 mt-0.5"></i>
+                                    <div class="space-y-2">
+                                        <span class="text-[11px] uppercase tracking-widest text-brand-primary font-black">Elegant Refresh</span>
+                                        <p class="text-[13px] text-black/60 leading-relaxed font-medium straight-text">歡迎再次預約。為精確掌握底色層次，請提供目前「素容狀態」下的清晰近照，讓老師為妳評估最理想的高級感方案。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="lip_dark_correction-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                                <div class="p-6 rounded-[2rem] bg-brand-primary/5 border border-brand-primary/10 flex items-start gap-4">
+                                    <i data-lucide="sparkles" class="w-5 h-5 text-brand-primary/40 mt-0.5"></i>
+                                    <div class="space-y-2">
+                                        <span class="text-[11px] uppercase tracking-widest text-brand-primary font-black">Celestial Correction</span>
+                                        <p class="text-[13px] text-black/60 leading-relaxed font-medium straight-text">「烏唇校色」採精密轉色工藝（加收 $800 費用），旨在校正暗沈底色並還原通透紅潤。因各人黑色素權重不同，請提供自然光下素容近照，遇見專屬於妳的高級感方案。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative mt-8 p-10 rounded-[3rem] border-2 border-dashed border-[#EAE5E0] bg-white/40 transition-all duration-500 hover:border-brand-primary/20 group text-center">
+                            <input type="file" id="procedure-photo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10" onchange="handlePhotoPreview(this)">
+                            <div id="upload-placeholder" class="flex flex-col items-center space-y-5">
+                                <div class="w-14 h-14 bg-brand-primary/5 rounded-full flex items-center justify-center"><i data-lucide="camera" class="w-6 h-6 text-brand-primary/30"></i></div>
+                                <div class="space-y-3">
+                                    <p class="text-[14px] font-bold text-black/70 straight-text" id="upload-label">施作現況照片上傳</p>
+                                    <p class="text-[12px] text-black/40 leading-relaxed max-w-[320px] mx-auto straight-text italic">「預先上傳照片，縮短現場評估等待時光。」</p>
+                                </div>
+                            </div>
+                            <div id="upload-preview" class="hidden flex-col items-center space-y-4">
+                                <img src="" id="preview-img" class="w-24 h-24 object-cover rounded-2xl shadow-lg border-2 border-white mx-auto">
+                                <p class="text-[11px] text-brand-primary font-black uppercase tracking-[0.2em] straight-text">Photo Ready</p>
+                                <button type="button" onclick="resetPhoto(event)" class="text-[10px] text-black/30 underline uppercase">重新更換</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 mt-10">
+                            <div>
+                                <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-3 font-bold ml-1 straight-text">預約日期 Date</label>
+                                <input required type="date" id="date" class="korean-input cursor-pointer" onchange="handleDateChange()">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-3 font-bold ml-1 straight-text">時段 Time</label>
+                                <div class="relative">
+                                    <select required id="time" class="korean-input appearance-none pr-12 cursor-pointer text-center" disabled onchange="updateHiddenFields()">
+                                        <option value="">請先選擇日期</option>
+                                    </select>
+                                    <i data-lucide="chevron-down" class="absolute right-8 top-1/2 -translate-y-1/2 w-4 h-4 text-black/20 pointer-events-none"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health Declaration -->
+                        <section class="pt-10">
+                            <div class="p-6 md:p-10 bg-white/60 backdrop-blur-sm rounded-[2.5rem] md:rounded-[3rem] border border-[#F2EEEB] shadow-sm relative overflow-hidden">
+                                <div class="mb-8 flex items-center justify-center gap-4">
+                                    <span class="w-8 h-[1px] bg-brand-primary/10"></span>
+                                    <label class="text-[12px] font-black text-black/30 uppercase tracking-[0.4em] straight-text">Health Declaration / 健康聲明</label>
+                                    <span class="w-8 h-[1px] bg-brand-primary/10"></span>
+                                </div>
+                                <div id="contraindications-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                                <div id="health-notes-container" class="mt-6 hidden">
+                                    <label class="block text-[12px] uppercase tracking-wider mb-2 font-black straight-text">狀況詳細說明 / Please specify</label>
+                                    <textarea id="health-notes" class="korean-input min-h-[120px] text-[14px] py-4 rounded-3xl resize-none bg-brand-bg/30" placeholder="請在此輸入詳細說明..."></textarea>
+                                </div>
+                                <div class="mt-10 pt-10 border-t border-[#F2EEEB] text-center space-y-2">
+                                    <p class="text-[13px] text-black/50 leading-relaxed straight-text">為維護您的安全與術後效果，請務必誠實選取。</p>
+                                    <p class="text-[12px] text-brand-primary font-bold tracking-widest opacity-80 pt-2">點擊即代表您已詳閱並確認。</p>
+                                </div>
+                            </div>
+            <div class="flex items-center justify-center pt-8 mt-10">
+                                <label class="flex items-center gap-4 cursor-pointer group">
+                                    <input type="checkbox" id="agreement" required class="w-5 h-5 rounded border-[#EAE5E0] text-black accent-black" onchange="toggleSubmitButton()">
+                                    <span class="text-[13px] text-black/70 uppercase tracking-[0.2em] font-bold straight-text italic">我已確認上述健康聲明及施作須知 I Accept & Confirm</span>
+                                </label>
+                            </div>
+                        </section>
+
+                        <!-- Payment -->
+                        <section class="pt-8">
+                            <div class="p-10 md:p-16 bg-white rounded-[3rem] md:rounded-[4rem] border border-brand-border/40 shadow-[0_30px_70px_rgba(0,0,0,0.03)] text-center relative overflow-hidden group">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 rounded-full -mr-16 -mt-16 blur-3xl transition-transform duration-700 group-hover:scale-150"></div>
+                                
+                                <div class="relative z-10">
+                                    <span class="inline-block text-[10px] text-brand-primary/60 uppercase tracking-[0.5em] mb-6 font-black straight-text border-b border-brand-primary/10 pb-1">Deposit Information</span>
+                                    <h3 class="text-[26px] md:text-[30px] font-cute font-medium text-black tracking-[0.3em] mb-12 straight-text">席位預約匯款</h3>
+                                    <div class="w-full max-w-[360px] mx-auto space-y-12">
+                                        <div class="space-y-4">
+                                            <div class="flex flex-col items-center gap-1">
+                                                <span class="text-[11px] text-black/30 tracking-[0.2em] font-bold straight-text">BANK</span>
+                                                <span class="text-[15px] text-black/70 tracking-[0.1em] font-medium straight-text">連線商業銀行 (824)</span>
+                                            </div>
+                                            <div class="relative py-6 px-4 bg-brand-bg/40 rounded-3xl border border-brand-border/30">
+                                                <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-4 text-[9px] text-black/20 tracking-[0.4em] font-black uppercase">Account Number</span>
+                                                <div class="text-[28px] sm:text-[34px] font-cute font-medium text-black tracking-normal leading-none">111005579803</div>
+                                            </div>
+                                        </div>
+                                        <button type="button" onclick="copyToClipboard()" id="copy-btn" class="group/btn relative inline-flex items-center gap-4 px-12 py-4 bg-black text-white rounded-full transition-all duration-500 hover:bg-brand-primary hover:shadow-[0_15px_40px_rgba(160,110,110,0.3)] active:scale-95">
+                                            <span id="copy-text" class="text-[11px] font-black uppercase tracking-[0.3em] straight-text">Copy Account</span>
+                                            <i data-lucide="copy" class="w-3 h-3 text-white"></i>
+                                        </button>
+                                        <div class="pt-8 border-t border-brand-bg space-y-3">
+                                            <p class="text-[12px] font-black tracking-widest straight-text">
+                                                RESERVATION DEPOSIT: <span class="text-brand-primary text-[15px]">$1,000</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Final Steps -->
+                        <div class="pt-8 space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <label class="block text-[14px] uppercase tracking-wider text-black mb-3 font-black straight-text">帳號末五碼 Deposit</label>
+                                    <input required type="text" id="last-five" maxlength="5" class="korean-input" placeholder="匯款帳號末五碼" oninput="updateHiddenFields()">
+                                </div>
+                                <div class="flex items-end pb-3 text-[12px] text-brand-primary font-black leading-relaxed straight-text">預付訂金 $1,000 後請務必填寫，以便核對！</div>
+                            </div>
+                            <textarea id="other-notes" class="korean-input min-h-[120px] py-4 rounded-3xl resize-none" placeholder="其他備註..."></textarea>
+                            <button id="submit-btn" type="submit" disabled class="w-full py-6 rounded-[2rem] text-[16px] tracking-[0.4em] font-black uppercase transition-all duration-500 bg-brand-bg text-brand-primary opacity-50 cursor-not-allowed straight-text">確認提交預約</button>
+                        </div>
+
+                        <div class="hidden">
+                            <input type="hidden" name="name" id="hidden-name">
+                            <input type="hidden" name="phone" id="hidden-phone">
+                            <input type="hidden" name="birthday" id="hidden-birthday">
+                            <input type="hidden" name="line_id" id="hidden-line-id">
+                            <input type="hidden" name="service" id="hidden-service">
+                            <input type="hidden" name="date" id="hidden-date">
+                            <input type="hidden" name="time" id="hidden-time">
+                            <input type="hidden" name="assessment_experience" id="hidden-experience">
+                            <input type="hidden" name="photo_base64" id="hidden-photo-base64">
+                            <input type="hidden" name="deposit_last_five" id="hidden-last-five">
+                        </div>
+                    </form>
+                </div>
+
+                <div id="success-container" class="hidden text-center py-24 px-8 bg-white rounded-[4rem] border border-brand-accent/20">
+                    <div class="w-20 h-20 bg-brand-primary/5 rounded-full flex items-center justify-center mx-auto mb-10"><i data-lucide="check" class="text-brand-primary w-10 h-10"></i></div>
+                    <h2 class="text-[32px] mb-6 tracking-[0.2em] font-serif straight-text">預約資料已成功送出</h2>
+                    <p class="text-[16px] text-black/60 mb-12 max-w-md mx-auto straight-text">感謝您的預定！我們將在 24 小時內與您確認細節。</p>
+                    <button onclick="window.location.reload()" class="text-[14px] uppercase border-b border-black/20 pb-1 straight-text">回到起始頁面</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="period-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-6 modal-overlay">
+        <div class="bg-white rounded-[40px] p-10 max-w-sm w-full shadow-2xl">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center"><i data-lucide="alert-circle" class="w-6 h-6 text-red-500"></i></div>
+                <h3 class="text-[20px] font-bold straight-text">生理期施作須知</h3>
+            </div>
+            <p class="text-[14px] opacity-70 mb-10 straight-text">生理期皮膚敏弱。建議避開前 3 天，以確保留色率佳。</p>
+            <div class="space-y-6">
+                <label class="block text-[13px] font-black text-center straight-text">目前是經期的第幾天？</label>
+                <div class="grid grid-cols-4 gap-3">
+                    <button onclick="setPeriodDay(1)" class="day-btn py-3 rounded-2xl border border-brand-border font-bold">1</button>
+                    <button onclick="setPeriodDay(2)" class="day-btn py-3 rounded-2xl border border-brand-border font-bold">2</button>
+                    <button onclick="setPeriodDay(3)" class="day-btn py-3 rounded-2xl border border-brand-border font-bold">3</button>
+                    <button onclick="setPeriodDay(4)" class="day-btn py-3 rounded-2xl border border-brand-border font-bold">4</button>
+                    <button onclick="setPeriodDay(5)" class="day-btn py-3 rounded-2xl border border-brand-border font-bold">5</button>
+                    <button onclick="setPeriodDay(6)" class="day-btn py-3 rounded-2xl border border-brand-border font-bold">6</button>
+                    <button onclick="setPeriodDay(7)" class="day-btn py-3 rounded-2xl border border-brand-border font-bold">7</button>
+                    <button onclick="setPeriodDay(8)" class="day-btn py-3 rounded-2xl border border-brand-border font-bold">8</button>
+                </div>
+                <div id="period-result" class="hidden p-4 rounded-2xl text-center text-[14px] font-bold straight-text"></div>
+            </div>
+            <button onclick="closePeriodModal()" class="w-full mt-10 py-5 bg-brand-dark text-white rounded-full text-[14px] font-bold uppercase tracking-widest">確認並關閉</button>
+        </div>
+    </div>
+
+    <!-- Notice Modal -->
+    <div id="notice-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-6 modal-overlay">
+        <div class="bg-white rounded-[3rem] p-10 max-w-sm w-full shadow-2xl space-y-8 animate-in fade-in zoom-in duration-300">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center text-brand-primary">
+                    <i data-lucide="info" class="w-6 h-6"></i>
+                </div>
+                <h3 id="notice-title" class="text-[18px] font-bold straight-text"></h3>
+            </div>
+            <p id="notice-content" class="text-[14px] text-black/60 leading-relaxed straight-text"></p>
+            <button onclick="closeNoticeModal()" class="w-full py-5 bg-black text-white rounded-full text-[13px] font-black uppercase tracking-[0.2em] hover:bg-brand-primary transition-all active:scale-95 shadow-lg">我已瞭解並接受 I Accept</button>
+        </div>
+    </div>
+
+    <script>
+        const CONTRAINDICATIONS = [
+            { id: "coagulation", title: "嚴重凝血功能障礙", desc: "出血風險高，建議不宜施作。", urgent: true },
+            { id: "infection", title: "法定傳染性疾病", desc: "安全性考量，暫不接案。", urgent: true },
+            { id: "heart", title: "嚴重心臟病與高血壓", desc: "特別是有服用抗凝血藥者。", urgent: true },
+            { id: "autoimmune", title: "自體免疫系統疾病", desc: "免疫力低下風險極高。", urgent: true },
+            { id: "keloid", title: "蟹足腫體質", desc: "易產生疤痕組織增生。", urgent: true },
+            { id: "medication", title: "特定藥物使用者", desc: "近半年內服用過 A 酸或進行化療者。", urgent: true },
+            { id: "skin", title: "皮膚狀況不穩", desc: "眉部有濕疹或嚴重痘痘。", urgent: false },
+            { id: "pregnancy", title: "懷孕與哺乳期", desc: "荷爾蒙變化影響留色。", urgent: false },
+            { id: "diabetes", title: "糖尿病患者", desc: "傷口癒合慢、易發炎。", urgent: false },
+            { id: "recent_beauty", title: "近期醫美行為", desc: "單月內過度雷射或填補。", urgent: false },
+            { id: "period", title: "生理期", desc: "皮膚敏弱出血量增多。", urgent: false },
+            { id: "g6pd", title: "蠶豆症 (G6PD)", desc: "需注意色料成分。", urgent: false },
+            { id: "none", title: "以上皆無 (None)", desc: "身體狀況良好。", urgent: false },
+            { id: "other", title: "其他 (Other)", desc: "請於備註說明。", urgent: false },
+        ];
+
+        const MOCK_COMMENTS = [
+            { user: "子 珊", text: "眉毛做完超自然，完全沒有尷尬期，大推！", date: "2024.04.12" },
+            { user: "珮 汝", text: "手法很輕，我竟然睡了一覺醒來就變美了。", date: "2024.03.28" },
+            { user: "陳 宜 樺", text: "老師很有耐心，拯救了我的不對稱眉。", date: "2024.03.15" },
+            { user: "王 庭 語", text: "起床就能出門，省下超多畫眉時間！", date: "2024.05.02" },
+            { user: "陳 毓 璇", text: "色澤很透亮，這就是我要的高質感。", date: "2024.04.20" }
+        ];
+
+        let selectedContraindications = [];
+        let periodDay = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderReviews();
+            renderContraindications();
+            document.getElementById('date').setAttribute('min', new Date().toISOString().split('T')[0]);
+        });
+
+        function renderReviews() {
+            const container = document.getElementById('reviews-marquee');
+            container.innerHTML = [...MOCK_COMMENTS, ...MOCK_COMMENTS].map(c => `
+                <div class="px-8 py-10 rounded-[2.5rem] bg-white border border-[#F2EEEB] shadow-sm">
+                    <p class="text-[15px] text-black/70 mb-8 font-bold leading-relaxed">"${c.text}"</p>
+                    <div class="flex items-center justify-between border-t border-[#F9F7F5] pt-6">
+                        <span class="text-[11px] font-black uppercase">${c.user}</span>
+                        <span class="text-[10px] text-black/30 font-mono">${c.date}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderContraindications() {
+            const list = document.getElementById('contraindications-list');
+            list.innerHTML = CONTRAINDICATIONS.map(item => `
+                <label id="label-${item.id}" class="flex items-start gap-4 cursor-pointer p-5 rounded-2xl border border-[#F2EEEB] bg-white transition-all">
+                    <input type="checkbox" onchange="toggleContra('${item.id}')" class="contra-check w-5 h-5 rounded accent-black">
+                    <div class="flex-1">
+                        <span class="text-[14px] font-bold text-black/80">${item.title}</span><span id="period-tag-${item.id}" class="hidden ml-2"></span>
+                        <p class="item-desc text-[12px] text-black/40 mt-1 hidden">${item.desc}</p>
+                    </div>
+                </label>
+            `).join('');
+        }
+
+        function toggleContra(id) {
+            const label = document.getElementById(`label-${id}`);
+            const checkbox = label.querySelector('input');
+            const desc = label.querySelector('.item-desc');
+
+            if (checkbox.checked) {
+                if (id === 'none') {
+                    document.querySelectorAll('.contra-check').forEach(cb => { if (cb !== checkbox) cb.checked = false; });
+                    document.querySelectorAll('.item-desc').forEach(d => d.classList.add('hidden'));
+                    document.querySelectorAll('[id^="label-"]').forEach(l => l.classList.remove('bg-brand-primary/5', 'border-brand-primary/20'));
+                    selectedContraindications = ['none'];
+                } else {
+                    const noneCb = document.querySelector('input[onchange="toggleContra(\'none\')"]');
+                    if (noneCb.checked) {
+                        noneCb.checked = false;
+                        document.getElementById('label-none').classList.remove('bg-brand-primary/5', 'border-brand-primary/20');
+                        document.getElementById('label-none').querySelector('.item-desc').classList.add('hidden');
+                    }
+                    selectedContraindications = selectedContraindications.filter(c => c !== 'none');
+                    if (!selectedContraindications.includes(id)) selectedContraindications.push(id);
+                    if (id === 'period') openPeriodModal();
+                }
+                label.classList.add('bg-brand-primary/5', 'border-brand-primary/20');
+                desc.classList.remove('hidden');
+            } else {
+                selectedContraindications = selectedContraindications.filter(c => c !== id);
+                label.classList.remove('bg-brand-primary/5', 'border-brand-primary/20');
+                desc.classList.add('hidden');
+            }
+            document.getElementById('health-notes-container').classList.toggle('hidden', !selectedContraindications.includes('other'));
+            toggleSubmitButton();
+        }
+
+        function openPeriodModal() { document.getElementById('period-modal').classList.remove('hidden'); }
+        function closePeriodModal() { document.getElementById('period-modal').classList.add('hidden'); }
+
+        function openNoticeModal(title, content) {
+            document.getElementById('notice-title').innerText = title;
+            document.getElementById('notice-content').innerText = content;
+            document.getElementById('notice-modal').classList.remove('hidden');
+        }
+        function closeNoticeModal() { document.getElementById('notice-modal').classList.add('hidden'); }
+        function setPeriodDay(day) {
+            periodDay = day;
+            const res = document.getElementById('period-result');
+            res.classList.remove('hidden');
+            if (day <= 3) {
+                res.className = "p-4 rounded-2xl bg-red-50 text-red-600 text-[13px] font-bold";
+                res.innerText = "建議避開前 3 天";
+            } else {
+                res.className = "p-4 rounded-2xl bg-green-50 text-green-600 text-[13px] font-bold";
+                res.innerText = "此天數可正常預約";
+            }
+            toggleSubmitButton();
+        }
+
+        function handleServiceChange() {
+            const service = document.getElementById('service').value;
+            const browsSection = document.getElementById('brows-assessment-section');
+            const lipsSection = document.getElementById('lips-assessment-section');
+            const uploadLabel = document.getElementById('upload-label');
+            
+            if (service === 'misty_brows') {
+                browsSection.classList.remove('hidden');
+                lipsSection.classList.add('hidden');
+                uploadLabel.innerText = "眉毛現況照片上傳";
+            } else {
+                browsSection.classList.add('hidden');
+                lipsSection.classList.remove('hidden');
+                uploadLabel.innerText = "唇部現況照片上傳";
+            }
+            updateHiddenFields();
+        }
+
+        function handleExperienceChange(radio) {
+            // Toggle suggestions
+            const suggestionIds = [
+                'brow_new-suggestion', 'brow_previous-suggestion', 'brow_correction-suggestion',
+                'lip_new-suggestion', 'lip_previous-suggestion', 'lip_dark_correction-suggestion'
+            ];
+            suggestionIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            const targetSuggestion = document.getElementById(radio.value + '-suggestion');
+            if (targetSuggestion) targetSuggestion.classList.remove('hidden');
+
+            const alertOptions = ['brow_correction', 'lip_dark_correction'];
+            if (alertOptions.includes(radio.value)) {
+                let title = radio.value === 'brow_correction' ? "舊底色改眉須知" : "烏唇校色專業須知";
+                let content = radio.value === 'brow_correction' 
+                    ? "為追求最純淨的清透感，若目前底色過深，建議先進行除色。請務必提供清晰的現狀細節照，老師將為妳策劃專屬的修護方案。"
+                    : "此項目採精密轉色工藝（加收 $800 費用），旨在校正暗沈並還原通透紅潤。因黑色素層次各異，施作次數需由老師專業評估。請提供素容近照，遇見妳最理想的高級感紅潤。";
+                setTimeout(() => openNoticeModal(title, content), 300);
+            }
+            updateHiddenFields();
+        }
+
+        function handlePhotoPreview(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('preview-img').src = e.target.result;
+                    document.getElementById('upload-placeholder').classList.add('hidden');
+                    document.getElementById('upload-preview').classList.remove('hidden');
+                    document.getElementById('hidden-photo-base64').value = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function resetPhoto(e) {
+            e.stopPropagation();
+            document.getElementById('procedure-photo').value = '';
+            document.getElementById('upload-placeholder').classList.remove('hidden');
+            document.getElementById('upload-preview').classList.add('hidden');
+            document.getElementById('hidden-photo-base64').value = '';
+        }
+
+        function handleDateChange() {
+            const date = new Date(document.getElementById('date').value);
+            const timeSelect = document.getElementById('time');
+            timeSelect.innerHTML = '<option value="">請選擇時段</option>';
+            timeSelect.disabled = false;
+            if (date.getDay() === 0 || date.getDay() === 6) {
+                timeSelect.innerHTML += '<option value="09:00">09:00 AM</option><option value="14:00">14:00 PM</option><option value="19:00">19:00 PM</option>';
+            } else {
+                timeSelect.innerHTML += '<option value="19:00">19:00 PM (平日預估時段)</option>';
+            }
+            updateHiddenFields();
+        }
+
+        function updateHiddenFields() {
+            document.getElementById('hidden-name').value = document.getElementById('name').value;
+            document.getElementById('hidden-phone').value = document.getElementById('phone').value;
+            document.getElementById('hidden-birthday').value = document.getElementById('birthday').value;
+            document.getElementById('hidden-line-id').value = document.getElementById('line-id').value;
+            document.getElementById('hidden-service').value = document.getElementById('service').value;
+            document.getElementById('hidden-date').value = document.getElementById('date').value;
+            document.getElementById('hidden-time').value = document.getElementById('time').value;
+            document.getElementById('hidden-experience').value = document.querySelector('input[name="experience"]:checked')?.value || '';
+            document.getElementById('hidden-last-five').value = document.getElementById('last-five').value;
+            toggleSubmitButton();
+        }
+
+        function toggleSubmitButton() {
+            const btn = document.getElementById('submit-btn');
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const birthday = document.getElementById('birthday').value;
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const lastFive = document.getElementById('last-five').value.trim();
+            const agreement = document.getElementById('agreement').checked;
+            const experience = document.querySelector('input[name="experience"]:checked');
+
+            const isFilled = name && phone && birthday && date && time && lastFive.length === 5 && experience && agreement;
+            const isHealthy = !selectedContraindications.some(id => CONTRAINDICATIONS.find(c => c.id === id)?.urgent);
+
+            if (isFilled && isHealthy && selectedContraindications.length > 0) {
+                btn.disabled = false;
+                btn.className = "w-full py-6 rounded-[2rem] text-[16px] tracking-[0.4em] font-black bg-black text-white transition-all shadow-xl active:scale-95";
+            } else {
+                btn.disabled = true;
+                btn.className = "w-full py-6 rounded-[2rem] text-[16px] tracking-[0.4em] font-black bg-brand-border text-brand-primary opacity-50 cursor-not-allowed";
+            }
+        }
+
+        function copyToClipboard() {
+            navigator.clipboard.writeText("111005579803").then(() => {
+                const btn = document.getElementById('copy-text');
+                const old = btn.innerText;
+                btn.innerText = "COPIED!";
+                setTimeout(() => btn.innerText = old, 2000);
+            });
+        }
+
+        // --- 配置區域 ---
+        // 請將部署 Google Apps Script 後取得的「網頁應用程式 URL」貼在下方引號中
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw40PVkfs6Eg4U95tjn-goaTyeMX1C9g-7Qw_OkQG5AQ86Y-ihid1F_wAmBtbj1CxsE/exec";
+
+        document.getElementById('reservation-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const originalBtnText = btn.innerHTML;
+            
+            if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("您的")) {
+                alert("⚠️ 尚未設定後端網址！\n\n您需要先將 Code.gs 部署至 Google Apps Script 並取得 URL，再將其貼回 index.html 的 APPS_SCRIPT_URL 中。");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="flex items-center justify-center gap-3"><i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> <span>提交中 Processing...</span></div>';
+            lucide.createIcons();
+            
+            // 整理資料
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                line_id: document.getElementById('line-id').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                birthday: document.getElementById('birthday').value,
+                service: document.getElementById('service').value,
+                experience: document.querySelector('input[name="experience"]:checked')?.value || '',
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                health: selectedContraindications.map(id => CONTRAINDICATIONS.find(c => c.id === id)?.title).join(', '),
+                health_notes: document.getElementById('health-notes').value.trim(),
+                photo: document.getElementById('hidden-photo-base64').value,
+                deposit_last_five: document.getElementById('last-five').value.trim(),
+                other_notes: document.getElementById('other-notes').value.trim(),
+                timestamp: new Date().toLocaleString('zh-TW', { hour12: false })
+            };
+
+            try {
+                // 發送資料到 Google Apps Script
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                // 在 no-cors 模式下延遲顯示成功介面
+                setTimeout(() => {
+                    document.getElementById('form-container').classList.add('hidden');
+                    document.getElementById('success-container').classList.remove('hidden');
+                    lucide.createIcons();
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                }, 1000);
+
+            } catch (error) {
+                console.error("Submission error:", error);
+                alert("⚠️ 提交過程發生錯誤，請檢查網路連線。\n\n錯誤資訊：" + error.message);
+                btn.disabled = false;
+                btn.innerHTML = originalBtnText;
+                lucide.createIcons();
+            }
+        };
+    </script>
+</body>
+</html>
