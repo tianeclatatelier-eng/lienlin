@@ -207,8 +207,8 @@
                             <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-4 font-bold ml-1 text-center straight-text font-serif">施作項目 Service</label>
                             <div class="relative">
                                 <select id="service" class="korean-input appearance-none pr-12 cursor-pointer text-center font-bold" onchange="handleServiceChange()">
-                                    <option value="misty_brows">霧眉</option>
-                                    <option value="misty_lips">霧唇</option>
+                                    <option value="霧眉">霧眉</option>
+                                    <option value="霧唇">霧唇</option>
                                 </select>
                                 <i data-lucide="chevron-down" class="absolute right-8 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 pointer-events-none"></i>
                             </div>
@@ -219,19 +219,19 @@
                             <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-1 font-bold ml-1 text-center straight-text">眉部現況評估 Brows Assessment</label>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                                 <label class="cursor-pointer group relative">
-                                    <input type="radio" name="experience" value="brow_new" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <input type="radio" name="experience" value="初次嘗試霧眉" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
                                     <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
                                         <span class="text-[13px] font-bold text-black/50 straight-text">初次嘗試霧眉</span>
                                     </div>
                                 </label>
                                 <label class="cursor-pointer group relative">
-                                    <input type="radio" name="experience" value="brow_previous" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <input type="radio" name="experience" value="曾有霧眉經驗" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
                                     <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
                                         <span class="text-[13px] font-bold text-black/50 straight-text">曾有霧眉經驗</span>
                                     </div>
                                 </label>
                                 <label class="cursor-pointer group relative">
-                                    <input type="radio" name="experience" value="brow_correction" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <input type="radio" name="experience" value="需舊底色改眉" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
                                     <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
                                         <span class="text-[13px] font-bold text-black/50 straight-text">需舊底色改眉</span>
                                     </div>
@@ -244,19 +244,19 @@
                             <label class="block text-[11px] uppercase tracking-[0.25em] text-black/40 mb-1 font-bold ml-1 text-center straight-text">唇部現況評估 Lips Assessment</label>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                                 <label class="cursor-pointer group relative">
-                                    <input type="radio" name="experience" value="lip_new" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <input type="radio" name="experience" value="初次嘗試" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
                                     <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
                                         <span class="text-[13px] font-bold text-black/50 straight-text">初次嘗試</span>
                                     </div>
                                 </label>
                                 <label class="cursor-pointer group relative">
-                                    <input type="radio" name="experience" value="lip_previous" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <input type="radio" name="experience" value="曾有經驗" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
                                     <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
                                         <span class="text-[13px] font-bold text-black/50 straight-text">曾有經驗</span>
                                     </div>
                                 </label>
                                 <label class="cursor-pointer group relative">
-                                    <input type="radio" name="experience" value="lip_dark_correction" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
+                                    <input type="radio" name="experience" value="烏唇校色" class="assessment-card-input sr-only" onchange="handleExperienceChange(this)">
                                     <div class="assessment-card flex items-center justify-center p-4 rounded-2xl border border-[#EAE5E0] bg-white transition-all duration-300">
                                         <span class="text-[13px] font-bold text-black/50 straight-text">烏唇校色 (+$800)</span>
                                     </div>
@@ -266,7 +266,7 @@
 
                         <!-- Suggestions Container -->
                         <div id="suggestion-container" class="space-y-4 pt-4">
-                            <div id="brow_new-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                            <div id="初次嘗試霧眉-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
                                 <div class="p-6 rounded-[2rem] bg-brand-primary/5 border border-brand-primary/10 flex items-start gap-4">
                                     <i data-lucide="sparkles" class="w-5 h-5 text-brand-primary/40 mt-0.5"></i>
                                     <div class="space-y-2">
@@ -275,7 +275,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="brow_previous-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                            <div id="曾有霧眉經驗-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
                                 <div class="p-6 rounded-[2rem] bg-brand-primary/5 border border-brand-primary/10 flex items-start gap-4">
                                     <i data-lucide="heart" class="w-5 h-5 text-brand-primary/40 mt-0.5"></i>
                                     <div class="space-y-2">
@@ -284,7 +284,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="brow_correction-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                            <div id="需舊底色改眉-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
                                 <div class="p-6 rounded-[2rem] bg-red-50/50 border border-red-100 flex items-start gap-4 shadow-sm">
                                     <i data-lucide="alert-circle" class="w-5 h-5 text-red-400 mt-0.5"></i>
                                     <div class="space-y-2">
@@ -293,7 +293,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="lip_new-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                            <div id="初次嘗試-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
                                 <div class="p-6 rounded-[2rem] bg-brand-primary/5 border border-brand-primary/10 flex items-start gap-4">
                                     <i data-lucide="sparkles" class="w-5 h-5 text-brand-primary/40 mt-0.5"></i>
                                     <div class="space-y-2">
@@ -302,7 +302,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="lip_previous-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                            <div id="曾有經驗-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
                                 <div class="p-6 rounded-[2rem] bg-brand-primary/5 border border-brand-primary/10 flex items-start gap-4">
                                     <i data-lucide="heart" class="w-5 h-5 text-brand-primary/40 mt-0.5"></i>
                                     <div class="space-y-2">
@@ -311,7 +311,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="lip_dark_correction-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                            <div id="烏唇校色-suggestion" class="hidden animate-in fade-in slide-in-from-top-2 duration-500">
                                 <div class="p-6 rounded-[2rem] bg-brand-primary/5 border border-brand-primary/10 flex items-start gap-4">
                                     <i data-lucide="sparkles" class="w-5 h-5 text-brand-primary/40 mt-0.5"></i>
                                     <div class="space-y-2">
@@ -630,8 +630,8 @@
         function handleExperienceChange(radio) {
             // Toggle suggestions
             const suggestionIds = [
-                'brow_new-suggestion', 'brow_previous-suggestion', 'brow_correction-suggestion',
-                'lip_new-suggestion', 'lip_previous-suggestion', 'lip_dark_correction-suggestion'
+                '初次嘗試霧眉-suggestion', '曾有霧眉經驗-suggestion', '需舊底色改眉-suggestion',
+                '初次嘗試-suggestion', '曾有經驗-suggestion', '烏唇校色-suggestion'
             ];
             suggestionIds.forEach(id => {
                 const el = document.getElementById(id);
@@ -640,10 +640,10 @@
             const targetSuggestion = document.getElementById(radio.value + '-suggestion');
             if (targetSuggestion) targetSuggestion.classList.remove('hidden');
 
-            const alertOptions = ['brow_correction', 'lip_dark_correction'];
+            const alertOptions = ['需舊底色改眉', '烏唇校色'];
             if (alertOptions.includes(radio.value)) {
-                let title = radio.value === 'brow_correction' ? "舊底色改眉須知" : "烏唇校色專業須知";
-                let content = radio.value === 'brow_correction' 
+                let title = radio.value === '需舊底色改眉' ? "舊底色改眉須知" : "烏唇校色專業須知";
+                let content = radio.value === '需舊底色改眉' 
                     ? "為追求最純淨的清透感，若目前底色過深，建議先進行除色。請務必提供清晰的現狀細節照，老師將為妳策劃專屬的修護方案。"
                     : "此項目採精密轉色工藝（加收 $800 費用），旨在校正暗沈並還原通透紅潤。因黑色素層次各異，施作次數需由老師專業評估。請提供素容近照，遇見妳最理想的高級感紅潤。";
                 setTimeout(() => openNoticeModal(title, content), 300);
@@ -732,7 +732,7 @@
 
         // --- 配置區域 ---
         // 請將部署 Google Apps Script 後取得的「網頁應用程式 URL」貼在下方引號中
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwne2sNcsvf4f6oXGMYN0fq3mRsU-Ss5OSUUHWMG9quDs_3seUdtEvfZjApmzwPuWZ5kQ/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw40PVkfs6Eg4U95tjn-goaTyeMX1C9g-7Qw_OkQG5AQ86Y-ihid1F_wAmBtbj1CxsE/exec";
 
         document.getElementById('reservation-form').onsubmit = async function(e) {
             e.preventDefault();
