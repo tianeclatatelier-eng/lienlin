@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TIAN ÉCLAT | 恬光 預約系統</title>
+    <title>TIAN ÉCLAT Atelier | 恬光 預約系統</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;500;600&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Fredoka:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <!-- Tailwind CSS -->
@@ -57,7 +57,8 @@
 
         .korean-input {
             width: 100%;
-            padding: 1.15rem 1.75rem;
+            height: 60px;
+            padding: 0 1.75rem;
             background-color: #ffffff;
             border: 1px solid #EAE5E0;
             border-radius: 1.5rem;
@@ -69,6 +70,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.01);
             -webkit-appearance: none;
             appearance: none;
+            line-height: normal;
         }
 
         .korean-input:focus {
@@ -175,7 +177,7 @@
                     </section>
 
                     <div class="flex flex-col items-center mb-10 text-center">
-                        <span class="text-[11px] tracking-[0.5em] uppercase text-black/30 font-bold mb-4 straight-text">Appointment Form / 預約申請</span>
+                        <span class="text-[11px] tracking-[0.5em] uppercase text-black/30 font-bold mb-4 straight-text">TIAN ÉCLAT Atelier 恬光 / 預約申請</span>
                         <div class="w-10 h-[1px] bg-[#EAE5E0]"></div>
                     </div>
 
@@ -491,20 +493,46 @@
         </div>
     </div>
 
+    <!-- Warning Modal -->
+    <div id="warning-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-6 modal-overlay">
+        <div class="bg-white rounded-[3rem] px-8 py-12 max-w-[420px] w-full shadow-2xl space-y-8 animate-in fade-in zoom-in duration-300 text-center relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-orange-50 rounded-full blur-3xl opacity-50"></div>
+            
+            <div class="flex flex-col items-center gap-6">
+                <div class="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center text-orange-500 shadow-inner">
+                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-[24px] font-bold text-black tracking-[0.1em] straight-text">專業施作警示</h3>
+                    <p id="warning-item-title" class="text-[16px] font-bold text-brand-primary tracking-wide straight-text"></p>
+                </div>
+            </div>
+            
+            <div class="space-y-4 px-2">
+                <p class="text-[15px] text-black/40 leading-relaxed text-justify straight-text">
+                    親愛的顧客，您的健康與安全是恬光最在乎的事。基於保護原則與專業考量，若您目前有此項狀況，<span class="text-red-500 font-bold">現階段不適合進行施作服務</span>。我們深感遺憾無法即刻為您服務，待您身體恢復至最佳狀態時，誠摯歡迎再次與我們預約這份質感蛻變。
+                </p>
+            </div>
+            
+            <button onclick="closeWarningModal()" class="w-full py-6 bg-[#33302E] text-white rounded-full text-[14px] font-bold tracking-[0.2em] hover:bg-black transition-all active:scale-95 shadow-xl">我已了解並關閉</button>
+        </div>
+    </div>
+
     <script>
         const CONTRAINDICATIONS = [
             { id: "coagulation", title: "嚴重凝血功能障礙", desc: "出血風險高，建議不宜施作。", urgent: true },
             { id: "infection", title: "法定傳染性疾病", desc: "安全性考量，暫不接案。", urgent: true },
             { id: "heart", title: "嚴重心臟病與高血壓", desc: "特別是有服用抗凝血藥者。", urgent: true },
             { id: "autoimmune", title: "自體免疫系統疾病", desc: "免疫力低下風險極高。", urgent: true },
+            { id: "g6pd", title: "蠶豆症 (G6PD)", desc: "需注意色料成分。", urgent: true },
             { id: "keloid", title: "蟹足腫體質", desc: "易產生疤痕組織增生。", urgent: true },
             { id: "medication", title: "特定藥物使用者", desc: "近半年內服用過 A 酸或進行化療者。", urgent: true },
-            { id: "skin", title: "皮膚狀況不穩", desc: "眉部有濕疹或嚴重痘痘。", urgent: false },
-            { id: "pregnancy", title: "懷孕與哺乳期", desc: "荷爾蒙變化影響留色。", urgent: false },
-            { id: "diabetes", title: "糖尿病患者", desc: "傷口癒合慢、易發炎。", urgent: false },
-            { id: "recent_beauty", title: "近期醫美行為", desc: "單月內過度雷射或填補。", urgent: false },
+            { id: "skin", title: "皮膚狀況不穩", desc: "眉部有濕疹或嚴重痘痘。", urgent: true },
+            { id: "diabetes", title: "糖尿病患者", desc: "傷口癒合慢、易發炎。", urgent: true },
+            { id: "recent_beauty", title: "近期醫美行為", desc: "單月內過度雷射或填補。", urgent: true },
+            { id: "pregnancy", title: "懷孕期間", desc: "情緒緊張可能引起宮縮；荷爾蒙變化影響留色。", urgent: true },
+            { id: "breastfeeding", title: "哺乳期", desc: "荷爾蒙變化影響留色。", urgent: false },
             { id: "period", title: "生理期", desc: "皮膚敏弱出血量增多。", urgent: false },
-            { id: "g6pd", title: "蠶豆症 (G6PD)", desc: "需注意色料成分。", urgent: false },
             { id: "none", title: "以上皆無 (None)", desc: "身體狀況良好。", urgent: false },
             { id: "other", title: "其他 (Other)", desc: "請於備註說明。", urgent: false },
         ];
@@ -520,11 +548,47 @@
         let selectedContraindications = [];
         let periodDay = null;
 
+        let bookedDates = [];
+        let isFetchingDates = false;
+
+        async function fetchBookedDates() {
+            if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("您的") || isFetchingDates) return;
+            isFetchingDates = true;
+            
+            // 增加 3 秒超時，防止請求掛起導致 UI 卡死 (縮短一點)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, { 
+                    signal: controller.signal,
+                    method: 'GET'
+                });
+                clearTimeout(timeoutId);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                bookedDates = Array.isArray(data.bookedDates) ? data.bookedDates : [];
+                console.log("Updated booked dates:", bookedDates);
+            } catch (e) {
+                console.warn("Fetch booked dates error (Expected if not set up):", e.message);
+                // 發生錯誤時保持既有資料或空陣列
+                bookedDates = bookedDates || [];
+            } finally {
+                isFetchingDates = false;
+                clearTimeout(timeoutId);
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             renderReviews();
             renderContraindications();
-            document.getElementById('date').setAttribute('min', new Date().toISOString().split('T')[0]);
+            const dateInput = document.getElementById('date');
+            if (dateInput) {
+                dateInput.setAttribute('min', new Date().toISOString().split('T')[0]);
+            }
+            // 靜默預讀取
+            fetchBookedDates();
         });
 
         function renderReviews() {
@@ -574,6 +638,12 @@
                     selectedContraindications = selectedContraindications.filter(c => c !== 'none');
                     if (!selectedContraindications.includes(id)) selectedContraindications.push(id);
                     if (id === 'period') openPeriodModal();
+                    
+                    // 專業施作警示：除了 哺乳、生理期、以上皆無、其他 以外的選項
+                    const warningExceptions = ['breastfeeding', 'period', 'none', 'other'];
+                    if (!warningExceptions.includes(id)) {
+                        openWarningModal(id);
+                    }
                 }
                 label.classList.add('bg-brand-primary/5', 'border-brand-primary/20');
                 desc.classList.remove('hidden');
@@ -595,6 +665,16 @@
             document.getElementById('notice-modal').classList.remove('hidden');
         }
         function closeNoticeModal() { document.getElementById('notice-modal').classList.add('hidden'); }
+
+        function openWarningModal(itemId) {
+            const item = CONTRAINDICATIONS.find(c => c.id === itemId);
+            if (!item) return;
+            document.getElementById('warning-item-title').innerText = `針對項目：${item.title}`;
+            document.getElementById('warning-modal').classList.remove('hidden');
+        }
+        function closeWarningModal() {
+            document.getElementById('warning-modal').classList.add('hidden');
+        }
         function setPeriodDay(day) {
             periodDay = day;
             const res = document.getElementById('period-result');
@@ -615,7 +695,7 @@
             const lipsSection = document.getElementById('lips-assessment-section');
             const uploadLabel = document.getElementById('upload-label');
             
-            if (service === 'misty_brows') {
+            if (service === '霧眉') {
                 browsSection.classList.remove('hidden');
                 lipsSection.classList.add('hidden');
                 uploadLabel.innerText = "眉毛現況照片上傳";
@@ -624,6 +704,18 @@
                 lipsSection.classList.remove('hidden');
                 uploadLabel.innerText = "唇部現況照片上傳";
             }
+
+            // 切換項目時清除已選的評估選項，避免隱藏欄位資料錯誤
+            document.querySelectorAll('input[name="experience"]').forEach(radio => radio.checked = false);
+            const suggestionIds = [
+                '初次嘗試霧眉-suggestion', '曾有霧眉經驗-suggestion', '需舊底色改眉-suggestion',
+                '初次嘗試-suggestion', '曾有經驗-suggestion', '烏唇校色-suggestion'
+            ];
+            suggestionIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            
             updateHiddenFields();
         }
 
@@ -672,17 +764,71 @@
             document.getElementById('hidden-photo-base64').value = '';
         }
 
-        function handleDateChange() {
-            const date = new Date(document.getElementById('date').value);
+        // 獨立出的時段渲染函數
+        function renderTimeSlots(dateStr) {
+            if (!dateStr) return;
             const timeSelect = document.getElementById('time');
+            
+            // 避免時區偏差，使用字串分割判斷假日
+            const parts = dateStr.split('-');
+            const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+            const day = dateObj.getDay();
+            const isWeekend = (day === 0 || day === 6);
+
             timeSelect.innerHTML = '<option value="">請選擇時段</option>';
             timeSelect.disabled = false;
-            if (date.getDay() === 0 || date.getDay() === 6) {
-                timeSelect.innerHTML += '<option value="09:00">09:00 AM</option><option value="14:00">14:00 PM</option><option value="19:00">19:00 PM</option>';
+
+            // 檢查整日是否已滿
+            if (bookedDates.includes(dateStr)) {
+                timeSelect.innerHTML = '<option value="">【當日已滿】Fully Booked</option>';
+                timeSelect.disabled = true;
+                updateHiddenFields();
+                return;
+            }
+
+            // 定義該日所有原始時段
+            const allSlots = [];
+            if (isWeekend) {
+                allSlots.push({ value: "09:00", label: "09:00 AM" });
+                allSlots.push({ value: "14:00", label: "14:00 PM" });
+                allSlots.push({ value: "19:00", label: "19:00 PM" });
             } else {
-                timeSelect.innerHTML += '<option value="19:00">19:00 PM (平日預估時段)</option>';
+                allSlots.push({ value: "19:00", label: "19:00 PM (平日預約時段)" });
+            }
+
+            // 過濾已被預約的特定時段 (格式: YYYY-MM-DD|HH:MM)
+            const availableSlots = allSlots.filter(slot => {
+                const slotKey = `${dateStr}|${slot.value}`;
+                return !bookedDates.includes(slotKey);
+            });
+
+            if (availableSlots.length === 0) {
+                timeSelect.innerHTML = '<option value="">【當日已滿】Fully Booked</option>';
+                timeSelect.disabled = true;
+            } else {
+                availableSlots.forEach(slot => {
+                    const opt = document.createElement('option');
+                    opt.value = slot.value;
+                    opt.innerText = slot.label;
+                    timeSelect.appendChild(opt);
+                });
             }
             updateHiddenFields();
+        }
+
+        async function handleDateChange() {
+            const dateInput = document.getElementById('date');
+            const dateStr = dateInput.value;
+            
+            if (!dateStr) return;
+
+            // 立即渲染目前的資料 (即使是空的或是舊的)
+            renderTimeSlots(dateStr);
+
+            // 在背後靜靜更新資料，並在更新完後重新渲染
+            fetchBookedDates().then(() => {
+                renderTimeSlots(dateStr);
+            });
         }
 
         function updateHiddenFields() {
